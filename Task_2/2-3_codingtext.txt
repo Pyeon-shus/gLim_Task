@@ -1,0 +1,48 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <map>
+#include <cmath>
+
+using namespace std;
+
+int solution(int a, int b, int c, int d) {
+    
+    vector<int> dice = {a, b, c, d};
+    int p = 0, q = 0, r = 0;
+    
+    map<int, int> freq;
+    for (int num : dice){
+        freq[num]++;
+    }
+    
+    if (freq.size()==1){//네 주사위 같은경우
+        int p = a;
+        return 1111*p;
+    }
+    else if(freq.size()==2){//두 수만 나왔는 경우
+        for (auto &[num, count] : freq){
+            if(count==3){//세개의 수가 같을때
+                int p = num;
+                int q = (a+b+c+d) - (3*p);
+                return pow((10*p+q),2);
+            }
+            else if(count == 2){//두수가 각각 같을때
+                if(p==0){p=num;}
+                else{q=num;}
+            }
+        }
+        return (p+q)*abs(p-q);
+    }
+    else if(freq.size()==3){//두 수를 제외한 값이 다른값일 경우
+        for (auto &[num, count] : freq){
+            if(count == 2){p=num;}
+            else if(count == 1 && q == 0){q=num;}
+            else if(count == 1){r=num;}
+        }
+        return q*r;
+    }
+    else{
+        return *min_element(dice.begin(),dice.end());
+    }
+}
