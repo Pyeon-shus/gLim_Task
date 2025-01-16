@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "CDlgimage.h"
 
 // CgLimTaskDlg 대화 상자
 class CgLimTaskDlg : public CDialogEx
@@ -11,6 +12,8 @@ class CgLimTaskDlg : public CDialogEx
 // 생성입니다.
 public:
 	CgLimTaskDlg(CWnd* pParent = nullptr);	// 표준 생성자입니다.
+	
+	CDlgimage* m_pDlgImage;
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -31,4 +34,9 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedDlg();
+	afx_msg void OnDestroy();
+
+	void callFunc(int n);
 };

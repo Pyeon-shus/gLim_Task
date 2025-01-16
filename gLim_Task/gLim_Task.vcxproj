@@ -183,6 +183,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CDlgimage.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="gLim_Task.h" />
     <ClInclude Include="gLim_TaskDlg.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CDlgimage.cpp" />
     <ClCompile Include="gLim_Task.cpp" />
     <ClCompile Include="gLim_TaskDlg.cpp" />
     <ClCompile Include="pch.cpp">
