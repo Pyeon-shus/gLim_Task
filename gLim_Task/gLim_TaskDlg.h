@@ -39,4 +39,8 @@ public:
 	afx_msg void OnDestroy();
 
 	void callFunc(int n);
+	afx_msg void OnEnChangeRad();
+	afx_msg void OnEnChangeCircleWid();
+	afx_msg void OnBnClickedBtnRandMov();
+	afx_msg void OnBnClickedBtnReset();
 };

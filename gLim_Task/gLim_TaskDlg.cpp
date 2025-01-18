@@ -70,6 +70,10 @@ BEGIN_MESSAGE_MAP(CgLimTaskDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_DESTROY()
+	ON_EN_CHANGE(IDC_RAD, &CgLimTaskDlg::OnEnChangeRad)
+	ON_EN_CHANGE(IDC_CIRCLE_WID, &CgLimTaskDlg::OnEnChangeCircleWid)
+	ON_BN_CLICKED(IDC_BTN_RAND_MOV, &CgLimTaskDlg::OnBnClickedBtnRandMov)
+	ON_BN_CLICKED(IDC_BTN_RESET, &CgLimTaskDlg::OnBnClickedBtnReset)
 END_MESSAGE_MAP()
 
 
@@ -178,4 +182,38 @@ void CgLimTaskDlg::OnDestroy()
 
 void CgLimTaskDlg::callFunc(int n) {
 	cout << n << endl;
+}
+
+
+void CgLimTaskDlg::OnEnChangeRad()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialogEx::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// ENM_CHANGE가 있으면 마스크에 ORed를 플래그합니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CgLimTaskDlg::OnEnChangeCircleWid()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialogEx::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// ENM_CHANGE가 있으면 마스크에 ORed를 플래그합니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CgLimTaskDlg::OnBnClickedBtnRandMov()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CgLimTaskDlg::OnBnClickedBtnReset()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
