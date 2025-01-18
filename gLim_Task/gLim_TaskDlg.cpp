@@ -69,7 +69,6 @@ BEGIN_MESSAGE_MAP(CgLimTaskDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(Btn_Dlg, &CgLimTaskDlg::OnBnClickedDlg)
 	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
@@ -106,9 +105,16 @@ BOOL CgLimTaskDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	MoveWindow(0, 0, 640*2, 800);
 	m_pDlgImage = new CDlgimage;
 	m_pDlgImage->Create(IDD_CDlgimage, this);
 	m_pDlgImage->ShowWindow(SW_SHOW);
+	m_pDlgImage->MoveWindow(0, 0, 640, 480);
+
+	m_pDlgImage_Result = new CDlgimage;
+	m_pDlgImage_Result->Create(IDD_CDlgimage, this);
+	m_pDlgImage_Result->ShowWindow(SW_SHOW);
+	m_pDlgImage_Result->MoveWindow(640, 0, 640, 480);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -160,15 +166,6 @@ void CgLimTaskDlg::OnPaint()
 HCURSOR CgLimTaskDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
-}
-
-
-
-void CgLimTaskDlg::OnBnClickedDlg()
-{
-	/*CDlgimage dlg;
-	dlg.DoModal();*/
-	m_pDlgImage->ShowWindow(SW_SHOW);
 }
 
 
