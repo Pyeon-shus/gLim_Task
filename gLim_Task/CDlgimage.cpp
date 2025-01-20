@@ -17,7 +17,9 @@ using namespace std;
 IMPLEMENT_DYNAMIC(CDlgimage, CDialogEx)
 
 CDlgimage::CDlgimage(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_CDlgimage, pParent)
+	: CDialogEx(IDD_CDlgimage, pParent), 
+	m_isDragging(false),
+	m_draggedPointIndex(-1) // 초기화
 {
 	m_pParent = pParent;
 }
@@ -38,6 +40,7 @@ BEGIN_MESSAGE_MAP(CDlgimage, CDialogEx)
 	ON_WM_MOUSEACTIVATE()
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 
@@ -133,65 +136,108 @@ int CDlgimage::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
 
 void CDlgimage::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// 마우스 이동 좌표 업데이트
-	m_currentPoint = point;
+	if (m_isDragging) {
+		CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent);
+		if (pParent != nullptr && validimgPos(point.x, point.y)) {
+			// 드래그 중인 클릭 지점 좌표 업데이트
+			pParent->m_clickPoints[m_draggedPointIndex].point = point;
 
-	// 화면 갱신 요청
-	//Invalidate();
+			// 정원 및 원 다시 그리기
+			pParent->RedrawAll();
+		}
+	}
 
 	CDialogEx::OnMouseMove(nFlags, point);
 }
 
+
 void CDlgimage::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	unsigned char* fm = (unsigned char*)m_image.GetBits();
-	int radius = 10; // 기본 반지름 값 설정
-	int nWidth = m_image.GetWidth();
-	int nHeight = m_image.GetHeight();
 
-	// 클릭한 좌표가 이미지 크기를 벗어났는지 확인
-	if (point.x < 0 || point.y < 0 || point.x > nWidth || point.y > nHeight) {
+	// 좌표가 이미지 영역에 유효한지 확인
+	if (!validimgPos(point.x, point.y)) {
 		AfxMessageBox(_T("클릭한 좌표가 이미지 영역을 벗어났습니다."));
+		return; // 유효하지 않으면 함수 종료
 	}
-	else {
-		// 부모 다이얼로그에서 반지름 값 가져오기
-		CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent); // 부모 다이얼로그 캐스팅
 
-		if (pParent != nullptr) {
-			if (pParent->m_pDlgImage == this && (pParent->m_nRadius > 0) && (pParent->m_CirWidth > 0)) {
-				// 클릭 좌표 저장 (최대 3개)
-				if (pParent->m_clickPoints.size() < 100) {
-					pParent->m_clickPoints.push_back(point);
-					radius = pParent->m_nRadius;
+	// 부모 다이얼로그에서 반지름 값 가져오기
+	CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent); // 부모 다이얼로그 캐스팅
 
-					cout << "X: " << point.x << ", Y: " << point.y << endl;
-					cout << "└" << "X: " << nWidth << ", Y: " << nHeight << endl;
+	if (pParent != nullptr) {
+		if (pParent->m_pDlgImage == this && (pParent->m_nRadius > 0) && (pParent->m_CirWidth > 0)) {
+			if (pParent->m_clickPoints.size() < 3) { // N개 만큼
+				// PointData 생성 및 추가
+				PointData data;
+				data.point = point;
+				data.radius = pParent->m_nRadius; // 현재 반지름 값 저장
+				pParent->m_clickPoints.push_back(data);
 
-					if (radius > 0) {
-						DrawCircle(fm, point.x, point.y, radius, 0); // 클릭 지점에 원 그리기
+				cout << "X: " << point.x << ", Y: " << point.y << endl;
+				cout << "└" << "X: " << m_image.GetWidth() << ", Y: " << m_image.GetHeight() << endl;
+
+				if (data.radius > 0) {
+					DrawCircle(fm, point.x, point.y, data.radius, 0); // 클릭 지점에 원 그리기
+				}
+				pParent->m_pDlgImage->Invalidate(); // 화면 갱신
+			}
+			
+			else {
+				// 좌표가 이미지 영역에 유효한지 확인
+				if (!validimgPos(point.x, point.y)) {
+					AfxMessageBox(_T("클릭한 좌표가 이미지 영역을 벗어났습니다."));
+					return;
+				}
+
+				CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent); // 부모 다이얼로그 캐스팅
+
+				if (pParent != nullptr) {
+					// 클릭된 좌표가 기존 점 근처인지 확인
+					for (size_t i = 0; i < pParent->m_clickPoints.size(); ++i) {
+						const auto& clickPoint = pParent->m_clickPoints[i].point;
+						if (abs(clickPoint.x - point.x) <= 10 && abs(clickPoint.y - point.y) <= 10) {
+							m_isDragging = true;           // 드래그 시작
+							m_draggedPointIndex = static_cast<int>(i); // 드래그 중인 점의 인덱스 저장
+							return;
+						}
 					}
 				}
-				else {
-					AfxMessageBox(_T("3개의 클릭 좌표가 이미 저장되었습니다."));
-				}
 			}
-			else if (pParent->m_pDlgImage != this) {
-				AfxMessageBox(_T("해당 다이얼로그는 결과를 나타내는 창입니다."));
+			if (pParent->m_clickPoints.size() == 3) {
+				pParent->RedrawAll();
+				pParent->m_pDlgImage->Invalidate();
 			}
-			else {
-				AfxMessageBox(_T("먼저 반지름 및 정원 폭 값을 입력해주세요.\nex) Value > 0"));
-			}
+		}
+		else if (pParent->m_pDlgImage != this) {
+			AfxMessageBox(_T("해당 다이얼로그는 결과를 나타내는 창입니다."));
 		}
 		else {
-			AfxMessageBox(_T("부모 다이얼로그가 유효하지 않습니다."));
+			AfxMessageBox(_T("먼저 반지름 및 정원 폭 값을 입력해주세요.\nex) Value > 0"));
 		}
+	}
+	else {
+		AfxMessageBox(_T("부모 다이얼로그가 유효하지 않습니다."));
 	}
 
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
 
+void CDlgimage::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	if (m_isDragging) {
+		m_isDragging = false;    // 드래그 종료
+		m_draggedPointIndex = -1; // 인덱스 초기화
 
+		CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent);
+		if (pParent != nullptr) {
+			// 최종 상태에서 정원 다시 그리기
+			pParent->RedrawAll();
+		}
+	}
+
+	CDialogEx::OnLButtonUp(nFlags, point);
+}
 
 
 
@@ -199,24 +245,35 @@ void CDlgimage::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CDlgimage::DrawCircle(unsigned char*, int x, int y, int radius, int color)
 {
-	CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent); // 부모 다이얼로그 캐스팅
-	int nCenterX = x +radius;
-	int nCenterY = y +radius;
-
+	if (m_image.IsNull()) {
+		AfxMessageBox(_T("이미지가 초기화되지 않았습니다."));
+		return;
+	}
+	//CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent); // 부모 다이얼로그 캐스팅
 	int nWidth = m_image.GetWidth();
 	int nHeight = m_image.GetHeight();
 	int nPitch = m_image.GetPitch();
 	unsigned char* fm = (unsigned char*)m_image.GetBits();
 
-	for (int j = y; j <= y+radius*2; j++) {
-		for (int i = x; i <= x+radius*x; i++) {
-			if(isinCircle(i,j, nCenterX, nCenterY, radius))
-				fm[(j - radius) * nPitch + (i - radius)] = color; // 검은색 픽셀
+	int nCenterX = x; // 클릭한 좌표를 중심으로 설정
+	int nCenterY = y;
+
+	// 원 그리기
+	for (int j = nCenterY - radius; j <= nCenterY + radius; j++) {
+		for (int i = nCenterX - radius; i <= nCenterX + radius; i++) {
+			// 원 내부의 픽셀인지 확인
+			if (isinCircle(i, j, nCenterX, nCenterY, radius)) {
+				// 유효한 이미지 좌표인지 확인
+				if (validimgPos(i, j)) {
+					// 중심을 기준으로 메모리 위치 계산
+					fm[j * nPitch + i] = color;
+				}
+			}
 		}
 	}
-
-	pParent->m_pDlgImage->Invalidate(); // 화면 갱신
+	//pParent->m_pDlgImage->Invalidate(); // 화면 갱신
 }
+
 
 
 bool CDlgimage::isinCircle(int i, int j, int nCenterX, int nCenterY, int radius) {
@@ -231,3 +288,33 @@ bool CDlgimage::isinCircle(int i, int j, int nCenterX, int nCenterY, int radius)
 	}
 	return bRet;
 }
+
+
+
+bool CDlgimage::validimgPos(int x, int y)
+{
+	int nWidth = m_image.GetWidth();
+	int nHeight = m_image.GetHeight();
+
+	return (x >= 0 && x < nWidth && y >= 0 && y < nHeight);
+}
+
+
+void CDlgimage::ClearImage()
+{
+	if (m_image==NULL) {
+		return; // 이미지가 없는 경우 바로 리턴
+	}
+
+	// 이미지 크기 가져오기
+	int nWidth = m_image.GetWidth();
+	int nHeight = m_image.GetHeight(); 
+	int nPitch = m_image.GetPitch();
+
+	// 이미지 메모리 초기화 (하얀색으로 설정) 
+	unsigned char* pBits = (unsigned char*)m_image.GetBits();
+	memset(pBits, 0xFF, nHeight * nPitch);
+
+	Invalidate(); // 화면 갱신
+}
+

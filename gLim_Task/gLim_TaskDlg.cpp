@@ -230,14 +230,55 @@ void CgLimTaskDlg::OnEnChangeCircleWid()
 
 void CgLimTaskDlg::OnBnClickedBtnRandMov()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_clickPoints.size() != 3) {
+		AfxMessageBox(_T("좌표가 3개가 아닙니다.\n좌표를 더 추가해주십시오."));
+		return; // 조건이 만족되지 않으면 종료
+	}
+	int nWidth = m_pDlgImage->m_image.GetWidth();
+	int nHeight = m_pDlgImage->m_image.GetHeight();
+	int nPitch = m_pDlgImage->m_image.GetPitch();
+
+	// 이미지 메모리 초기화 (하얀색으로 설정)
+	unsigned char* pBits = (unsigned char*)m_pDlgImage->m_image.GetBits();
+	memset(pBits, 0xFF, nHeight * nPitch);
+
+	// 랜덤하게 x, y 좌표를 생성하고 원을 다시 그림
+	for (auto& data : m_clickPoints) {
+		
+
+		// 랜덤한 x, y 좌표 생성 (화면 크기 내에서)
+		data.point.x = rand() % nWidth;
+		data.point.y = rand() % nHeight;
+
+		// 원 그리기
+		m_pDlgImage->DrawCircle(nullptr, data.point.x, data.point.y, data.radius, 0);
+	}
+	 
+	// 화면 갱신
+	RedrawAll();
+	m_pDlgImage->Invalidate();
 }
+
 
 
 void CgLimTaskDlg::OnBnClickedBtnReset()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	// m_pDlgImage 초기화
+	if (m_pDlgImage != nullptr) {
+		m_pDlgImage->ClearImage(); // m_pDlgImage 초기화
+	}
+
+	// 좌표값 초기화
+	if (!m_clickPoints.empty()) {
+		m_clickPoints.clear(); // 좌표 저장 벡터 초기화
+	}
+
+	// 화면과 좌표 값 초기화 메시지 출력
+	AfxMessageBox(_T("화면과 좌표 값이 초기화되었습니다."));
 }
+
+
 
 
 
@@ -272,6 +313,108 @@ void CgLimTaskDlg::OnBnClickedBtnSet()
 	}
 	else {
 		AfxMessageBox(_T("유효한 값들을 입력하세요.\nex) value > 0"));
+	}
+}
+
+void CgLimTaskDlg::PrintClickData()
+{
+	for (const auto& data : m_clickPoints) {
+		cout << "X: " << data.point.x << ", Y: " << data.point.y << ", R: " << data.radius << endl;
+	}
+}
+
+
+bool CgLimTaskDlg::CalculateCircle(const CPoint& p1, const CPoint& p2, const CPoint& p3, CPoint& center, int& radius)
+{
+	double x1 = p1.x, y1 = p1.y;
+	double x2 = p2.x, y2 = p2.y;
+	double x3 = p3.x, y3 = p3.y;
+
+	// 행렬식 계산
+	double det = (x1 * (y2 - y3)) - (y1 * (x2 - x3)) + ((x2 * y3) - (x3 * y2));
+	if (fabs(det) < 1e-6) {
+		return false; // 점이 거의 일직선인 경우 계산 실패
+	}
+
+	// 중심 계산
+	double A = x1 * x1 + y1 * y1;
+	double B = x2 * x2 + y2 * y2;
+	double C = x3 * x3 + y3 * y3;
+
+	double D = x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2);
+	double E = A * (y3 - y2) + B * (y1 - y3) + C * (y2 - y1);
+	double F = A * (x2 - x3) + B * (x3 - x1) + C * (x1 - x2);
+
+	double centerX = -E / (2 * D);
+	double centerY = -F / (2 * D);
+
+	// 소수점 보정 및 정수 변환
+	center.x = static_cast<int>(round(centerX));
+	center.y = static_cast<int>(round(centerY));
+
+	// 반지름 계산 (모든 점에서 중심까지의 거리 평균)
+	double r1 = sqrt((centerX - x1) * (centerX - x1) + (centerY - y1) * (centerY - y1));
+	double r2 = sqrt((centerX - x2) * (centerX - x2) + (centerY - y2) * (centerY - y2));
+	double r3 = sqrt((centerX - x3) * (centerX - x3) + (centerY - y3) * (centerY - y3));
+
+	radius = static_cast<int>(round((r1 + r2 + r3) / 3)); // 평균 반지름 사용
+
+	return true;
+}
+
+
+
+void CgLimTaskDlg::DrawEnclosingCircle()
+{
+	if (m_clickPoints.size() != 3) {
+		return; // 정원을 그리기 위한 점이 부족하면 리턴
+	}
+
+	const auto& points = m_clickPoints;
+	CPoint center;
+	int radius;
+
+	// 원의 중심과 반지름 계산
+	if (!CalculateCircle(points[0].point, points[1].point, points[2].point, center, radius)) {
+		return; // 점들이 일직선상에 있으면 리턴
+	}
+
+	int outerRadius = radius + m_CirWidth / 2;
+	int innerRadius = radius - m_CirWidth / 2;
+
+	// 큰 원 (회색)
+	if (m_pDlgImage) {
+		m_pDlgImage->DrawCircle(nullptr, center.x, center.y, outerRadius, 128); // 128 = 회색
+	}
+
+	// 작은 원 (하얀색)
+	if (innerRadius > 0 && m_pDlgImage) {
+		m_pDlgImage->DrawCircle(nullptr, center.x, center.y, innerRadius, 255); // 255 = 하얀색
+	}
+}
+
+void CgLimTaskDlg::RedrawAll()
+{
+	// 이미지 초기화 (하얀색 배경)
+	if (m_pDlgImage != nullptr) {
+		m_pDlgImage->ClearImage();
+	}
+
+	// 정원을 먼저 그림
+	if (m_clickPoints.size() == 3) {
+		DrawEnclosingCircle();
+	}
+
+	// 3개의 원을 그림
+	for (const auto& data : m_clickPoints) {
+		if (m_pDlgImage != nullptr) {
+			m_pDlgImage->DrawCircle(nullptr, data.point.x, data.point.y, data.radius, 0); // 검은색 원
+		}
+	}
+
+	// 화면 갱신
+	if (m_pDlgImage != nullptr) {
+		m_pDlgImage->Invalidate();
 	}
 }
 

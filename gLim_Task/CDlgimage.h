@@ -21,9 +21,14 @@ public:
 
 	void DrawCircle(unsigned char* fm, int x, int y, int radius, int color = 0);
 	bool isinCircle(int i, int j, int nCenterX, int nCenterY, int radius);
+	bool validimgPos(int x, int y);
+	void ClearImage();
 
 	CImage m_image;
 	CWnd* m_pParent;
+
+	bool m_isDragging; // 드래그 여부
+	int m_draggedPointIndex; // 드래그 중인 클릭 지점의 인덱스
 
 
 // 대화 상자 데이터입니다.
@@ -44,4 +49,5 @@ public:
 	afx_msg int OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 };

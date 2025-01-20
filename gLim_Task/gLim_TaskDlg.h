@@ -9,6 +9,11 @@
 
 using namespace std;
 
+struct PointData {
+	CPoint point;  // 클릭 좌표
+	int radius;    // 클릭 당시의 반지름 값
+};
+
 // CgLimTaskDlg 대화 상자
 class CgLimTaskDlg : public CDialogEx
 {
@@ -18,7 +23,7 @@ public:
 	
 	CDlgimage* m_pDlgImage;
 	CDlgimage* m_pDlgImage_Result;
-	vector<CPoint> m_clickPoints;
+	vector<PointData> m_clickPoints;
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -44,6 +49,11 @@ public:
 	afx_msg void OnDestroy();
 
 	void callFunc(int n);
+	void PrintClickData();
+	bool CalculateCircle(const CPoint& p1, const CPoint& p2, const CPoint& p3, CPoint& center, int& radius);
+	void DrawEnclosingCircle();
+	void RedrawAll();
+
 	afx_msg void OnEnChangeRad();
 	afx_msg void OnEnChangeCircleWid();
 	afx_msg void OnBnClickedBtnRandMov();
@@ -52,3 +62,5 @@ public:
 	int m_nRadius;
 	int m_CirWidth;
 };
+
+
