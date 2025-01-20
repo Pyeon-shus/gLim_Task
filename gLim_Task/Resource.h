@@ -11,10 +11,11 @@
 #define IDC_BTN_UP_PARENT               1000
 #define IDC_BTN_RESET                   1001
 #define IDC_BTN_RAND_MOV                1002
+#define IDC_BTN_PROCESS                 1003
+#define IDC_BTN_RAND_MOV2               1004
 #define IDC_RAD                         1006
 #define IDC_CIRCLE_WID                  1007
 #define IDC_SCREEN                      1009
-#define IDC_BUTTON1                     1010
 #define IDC_BTN_SET                     1010
 
 // Next default values for new objects

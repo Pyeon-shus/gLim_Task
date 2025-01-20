@@ -8,6 +8,10 @@
 #include "gLim_TaskDlg.h"
 #include "afxdialogex.h"
 #include <iostream>
+#include <thread>
+#include <chrono>
+#include <ctime>
+
 using namespace std;
 
 #ifdef _DEBUG
@@ -81,6 +85,8 @@ BEGIN_MESSAGE_MAP(CgLimTaskDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_RAND_MOV, &CgLimTaskDlg::OnBnClickedBtnRandMov)
 	ON_BN_CLICKED(IDC_BTN_RESET, &CgLimTaskDlg::OnBnClickedBtnReset)
 	ON_BN_CLICKED(IDC_BTN_SET, &CgLimTaskDlg::OnBnClickedBtnSet)
+	ON_BN_CLICKED(IDC_BTN_PROCESS, &CgLimTaskDlg::OnBnClickedBtnProcess)
+	ON_BN_CLICKED(IDC_BTN_RAND_MOV2, &CgLimTaskDlg::OnBnClickedBtnRandMov2)
 END_MESSAGE_MAP()
 
 
@@ -230,34 +236,16 @@ void CgLimTaskDlg::OnEnChangeCircleWid()
 
 void CgLimTaskDlg::OnBnClickedBtnRandMov()
 {
+	// 클릭 지점이 3개인지 확인
 	if (m_clickPoints.size() != 3) {
-		AfxMessageBox(_T("좌표가 3개가 아닙니다.\n좌표를 더 추가해주십시오."));
-		return; // 조건이 만족되지 않으면 종료
+		AfxMessageBox(_T("좌표가 3개가 아닙니다. 클릭 좌표를 추가해 주세요."));
+		return;
 	}
-	int nWidth = m_pDlgImage->m_image.GetWidth();
-	int nHeight = m_pDlgImage->m_image.GetHeight();
-	int nPitch = m_pDlgImage->m_image.GetPitch();
 
-	// 이미지 메모리 초기화 (하얀색으로 설정)
-	unsigned char* pBits = (unsigned char*)m_pDlgImage->m_image.GetBits();
-	memset(pBits, 0xFF, nHeight * nPitch);
-
-	// 랜덤하게 x, y 좌표를 생성하고 원을 다시 그림
-	for (auto& data : m_clickPoints) {
-		
-
-		// 랜덤한 x, y 좌표 생성 (화면 크기 내에서)
-		data.point.x = rand() % nWidth;
-		data.point.y = rand() % nHeight;
-
-		// 원 그리기
-		m_pDlgImage->DrawCircle(nullptr, data.point.x, data.point.y, data.radius, 0);
-	}
-	 
-	// 화면 갱신
-	RedrawAll();
-	m_pDlgImage->Invalidate();
+	// 랜덤 이동 작업을 비동기로 실행
+	thread(&CgLimTaskDlg::PerformRandomMovement, this, 1).detach();
 }
+
 
 
 
@@ -352,6 +340,9 @@ bool CgLimTaskDlg::CalculateCircle(const CPoint& p1, const CPoint& p2, const CPo
 	center.x = static_cast<int>(round(centerX));
 	center.y = static_cast<int>(round(centerY));
 
+	// 정원의 중심 좌표를 벡터에 저장
+	m_circleCenters = center;
+
 	// 반지름 계산 (모든 점에서 중심까지의 거리 평균)
 	double r1 = sqrt((centerX - x1) * (centerX - x1) + (centerY - y1) * (centerY - y1));
 	double r2 = sqrt((centerX - x2) * (centerX - x2) + (centerY - y2) * (centerY - y2));
@@ -419,3 +410,78 @@ void CgLimTaskDlg::RedrawAll()
 }
 
 
+
+
+void CgLimTaskDlg::OnBnClickedBtnProcess()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CgLimTaskDlg::MoveClickPointsRandomly()
+{
+	if (m_clickPoints.empty()) {
+		return;
+	}
+
+	int nWidth = m_pDlgImage->m_image.GetWidth();
+	int nHeight = m_pDlgImage->m_image.GetHeight();
+
+	// 클릭 지점 이동
+	for (auto& point : m_clickPoints) {
+		point.point.x = rand() % (nWidth-PADDING);
+		point.point.y = rand() % (nHeight-PADDING);
+	}
+
+	// 화면 갱신
+	RedrawAll();
+	m_pDlgImage->Invalidate();
+}
+
+void CgLimTaskDlg::PerformRandomMovement(int ett)
+{
+	int iterations = ett; // 총 10번 반복
+	int delayMs = 500;   // 초당 2회 (500ms 간격)
+
+	for (int i = 0; i < iterations; ++i) {
+		MoveClickPointsRandomly(); // 클릭 지점 랜덤 이동 수행
+
+		// 정원의 중심 좌표 출력
+		cout << "Iteration " << i + 1 << ":\n";
+		cout << "Click Points:\n";
+
+		// 클릭 지점 출력
+		for (const auto& point : m_clickPoints) {
+			cout << "  X: " << point.point.x << ", Y: " << point.point.y << ", Radius: " << point.radius << endl;
+		}
+
+		// 저장된 정원의 중심 좌표 출력
+		cout << "Circle Center:\n";
+		cout << "  Center X: " << m_circleCenters.x << ", Center Y: " << m_circleCenters.y << endl;
+
+
+		// 화면 갱신
+		RedrawAll();
+
+		// 500ms 대기 (UI 멈춤 방지)
+		std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
+	}
+
+	// 작업 완료 메시지 출력
+	AfxMessageBox(_T("랜덤 이동 작업이 완료되었습니다."));
+}
+
+
+
+void CgLimTaskDlg::OnBnClickedBtnRandMov2()
+{
+	// 클릭 지점이 3개인지 확인
+	if (m_clickPoints.size() != 3) {
+		AfxMessageBox(_T("좌표가 3개가 아닙니다. 클릭 좌표를 추가해 주세요."));
+		return;
+	}
+
+	// 랜덤 이동 작업을 비동기로 실행
+	thread(&CgLimTaskDlg::PerformRandomMovement, this, 10).detach();
+
+}

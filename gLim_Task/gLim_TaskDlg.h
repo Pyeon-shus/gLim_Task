@@ -6,12 +6,13 @@
 
 #include "CDlgimage.h"
 #include <vector>
+#define PADDING 10
 
 using namespace std;
 
 struct PointData {
-	CPoint point;  // 클릭 좌표
-	int radius;    // 클릭 당시의 반지름 값
+	CPoint point{ 0, 0 }; // 클릭 좌표를 (0, 0)으로 초기화
+	int radius{ 0 };      // 반지름을 0으로 초기화
 };
 
 // CgLimTaskDlg 대화 상자
@@ -24,6 +25,7 @@ public:
 	CDlgimage* m_pDlgImage;
 	CDlgimage* m_pDlgImage_Result;
 	vector<PointData> m_clickPoints;
+	CPoint m_circleCenters;
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -53,6 +55,8 @@ public:
 	bool CalculateCircle(const CPoint& p1, const CPoint& p2, const CPoint& p3, CPoint& center, int& radius);
 	void DrawEnclosingCircle();
 	void RedrawAll();
+	void MoveClickPointsRandomly();
+	void PerformRandomMovement(int ett=10);
 
 	afx_msg void OnEnChangeRad();
 	afx_msg void OnEnChangeCircleWid();
@@ -61,6 +65,8 @@ public:
 	afx_msg void OnBnClickedBtnSet();
 	int m_nRadius;
 	int m_CirWidth;
+	afx_msg void OnBnClickedBtnProcess();
+	afx_msg void OnBnClickedBtnRandMov2();
 };
 
 

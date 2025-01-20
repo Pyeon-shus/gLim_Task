@@ -69,33 +69,6 @@ BOOL CDlgimage::OnInitDialog()
 }
 
 
-//void CDlgimage::OnPaint()
-//{
-//	CPaintDC dc(this); // device context for painting
-//	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-//	// 그리기 메시지에 대해서는 CDialogEx::OnPaint()을(를) 호출하지 마십시오.
-//	if (m_image) {
-//		m_image.Draw(dc, 0, 0);
-//	}
-//}
-
-//void CDlgimage::OnPaint()
-//{
-//	CPaintDC dc(this); // 그리기를 위한 DC
-//	if (m_image) {
-//		m_image.Draw(dc, 0, 0); // 이미지를 다이얼로그에 그림
-//	}
-//
-//	// 좌표 표시
-//	CString clickMsg, moveMsg;
-//	clickMsg.Format(_T("저장 좌표: (%d, %d)"), m_clickPoint.x, m_clickPoint.y);
-//	moveMsg.Format(_T("현재 좌표: (%d, %d)"), m_currentPoint.x, m_currentPoint.y);
-//
-//	// 좌표를 다이얼로그 상단에 표시
-//	dc.TextOut(10, 10, clickMsg);
-//	dc.TextOut(10, 30, moveMsg);
-//}
-
 void CDlgimage::OnPaint()
 {
 	CPaintDC dc(this);
@@ -103,9 +76,6 @@ void CDlgimage::OnPaint()
 		m_image.Draw(dc, 0, 0);
 	}
 }
-
-
-
 
 
 void CDlgimage::InitImage()
@@ -166,43 +136,36 @@ void CDlgimage::OnLButtonDown(UINT nFlags, CPoint point)
 
 	if (pParent != nullptr) {
 		if (pParent->m_pDlgImage == this && (pParent->m_nRadius > 0) && (pParent->m_CirWidth > 0)) {
-			if (pParent->m_clickPoints.size() < 3) { // N개 만큼
+			if (pParent->m_clickPoints.size() < 3) { // 클릭 지점이 3개 미만인 경우
 				// PointData 생성 및 추가
 				PointData data;
 				data.point = point;
 				data.radius = pParent->m_nRadius; // 현재 반지름 값 저장
 				pParent->m_clickPoints.push_back(data);
 
-				cout << "X: " << point.x << ", Y: " << point.y << endl;
-				cout << "└" << "X: " << m_image.GetWidth() << ", Y: " << m_image.GetHeight() << endl;
-
 				if (data.radius > 0) {
 					DrawCircle(fm, point.x, point.y, data.radius, 0); // 클릭 지점에 원 그리기
 				}
 				pParent->m_pDlgImage->Invalidate(); // 화면 갱신
 			}
-			
 			else {
-				// 좌표가 이미지 영역에 유효한지 확인
-				if (!validimgPos(point.x, point.y)) {
-					AfxMessageBox(_T("클릭한 좌표가 이미지 영역을 벗어났습니다."));
-					return;
-				}
+				// 클릭된 좌표가 기존 점 근처인지 확인하여 드래그 시작
+				for (size_t i = 0; i < pParent->m_clickPoints.size(); ++i) {
+					const auto& clickPoint = pParent->m_clickPoints[i];
+					int recognitionRadius = max(7, clickPoint.radius); // 반지름 기반 인식 범위 설정
 
-				CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent); // 부모 다이얼로그 캐스팅
-
-				if (pParent != nullptr) {
-					// 클릭된 좌표가 기존 점 근처인지 확인
-					for (size_t i = 0; i < pParent->m_clickPoints.size(); ++i) {
-						const auto& clickPoint = pParent->m_clickPoints[i].point;
-						if (abs(clickPoint.x - point.x) <= 10 && abs(clickPoint.y - point.y) <= 10) {
-							m_isDragging = true;           // 드래그 시작
-							m_draggedPointIndex = static_cast<int>(i); // 드래그 중인 점의 인덱스 저장
-							return;
-						}
+					// 클릭 지점이 원의 인식 범위 내에 있는지 확인
+					int dx = point.x - clickPoint.point.x;
+					int dy = point.y - clickPoint.point.y;
+					if (dx * dx + dy * dy <= recognitionRadius * recognitionRadius) {
+						m_isDragging = true; // 드래그 시작
+						m_draggedPointIndex = static_cast<int>(i); // 드래그 중인 점의 인덱스 저장
+						return;
 					}
 				}
 			}
+
+			// 클릭 지점이 3개인 경우 정원 및 원 다시 그리기
 			if (pParent->m_clickPoints.size() == 3) {
 				pParent->RedrawAll();
 				pParent->m_pDlgImage->Invalidate();
