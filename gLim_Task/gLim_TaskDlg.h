@@ -5,6 +5,9 @@
 #pragma once
 
 #include "CDlgimage.h"
+#include <vector>
+
+using namespace std;
 
 // CgLimTaskDlg 대화 상자
 class CgLimTaskDlg : public CDialogEx
@@ -15,6 +18,7 @@ public:
 	
 	CDlgimage* m_pDlgImage;
 	CDlgimage* m_pDlgImage_Result;
+	vector<CPoint> m_clickPoints;
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -22,6 +26,7 @@ public:
 #endif
 
 	protected:
+	
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 지원입니다.
 
 
@@ -43,4 +48,7 @@ public:
 	afx_msg void OnEnChangeCircleWid();
 	afx_msg void OnBnClickedBtnRandMov();
 	afx_msg void OnBnClickedBtnReset();
+	afx_msg void OnBnClickedBtnSet();
+	int m_nRadius;
+	int m_CirWidth;
 };

@@ -1,30 +1,30 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\",
+  "WorkspaceRootPath": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\CDlgimage.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\CDlgimage.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|solutionrelative:gLim_Task\\CDlgimage.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\CDlgimage.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_TaskDlg.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|solutionrelative:gLim_Task\\gLim_TaskDlg.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\CDlgimage.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|solutionrelative:gLim_Task\\CDlgimage.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLimTask.rc||{177559E0-D141-11D0-92DF-00A0C9138C45}|,   b e g i n       % \u0087 2$  \u0022     ",
-      "RelativeMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|solutionrelative:gLim_Task\\gLimTask.rc||{177559E0-D141-11D0-92DF-00A0C9138C45}|,   b e g i n       % \u0087 2$  \u0022     "
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLim_TaskDlg.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_TaskDlg.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|solutionrelative:gLim_Task\\gLim_TaskDlg.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLimTask.rc||{177559E0-D141-11D0-92DF-00A0C9138C45}|,   b e g i n       % \u0086 2$  \u0022     ",
+      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLimTask.rc||{177559E0-D141-11D0-92DF-00A0C9138C45}|,   b e g i n       % \u0086 2$  \u0022     ",
       "RelativeMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|solutionrelative:gLim_Task\\gLimTask.rc||{177559E0-D141-11D0-92DF-00A0C9138C45}|,   b e g i n       % \u0086 2$  \u0022     "
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLim_TaskDlg.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|solutionrelative:gLim_Task\\gLim_TaskDlg.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLimTask.rc||{177559E0-D141-11D0-92DF-00A0C9138C45}|,   b e g i n       % \u0087 2$  \u0022     ",
+      "RelativeMoniker": "D:0:0:{A7AFEA7F-2346-42B5-9C89-9DFA1C8C922C}|gLim_Task\\gLim_Task.vcxproj|solutionrelative:gLim_Task\\gLimTask.rc||{177559E0-D141-11D0-92DF-00A0C9138C45}|,   b e g i n       % \u0087 2$  \u0022     "
     }
   ],
   "DocumentGroupContainers": [
@@ -40,9 +40,9 @@
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "gLimTask.rc - IDD_GLIM_TASK_DIALOG - Dialog",
-              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLimTask.rc",
+              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLimTask.rc",
               "RelativeDocumentMoniker": "gLim_Task\\gLimTask.rc",
-              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLimTask.rc - IDD_GLIM_TASK_DIALOG - Dialog",
+              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLimTask.rc - IDD_GLIM_TASK_DIALOG - Dialog",
               "RelativeToolTip": "gLim_Task\\gLimTask.rc - IDD_GLIM_TASK_DIALOG - Dialog",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
               "WhenOpened": "2025-01-18T09:29:27.799Z",
@@ -52,24 +52,24 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "CDlgimage.cpp",
-              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\CDlgimage.cpp",
+              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\CDlgimage.cpp",
               "RelativeDocumentMoniker": "gLim_Task\\CDlgimage.cpp",
-              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\CDlgimage.cpp",
+              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\CDlgimage.cpp",
               "RelativeToolTip": "gLim_Task\\CDlgimage.cpp",
-              "ViewState": "AgIAAEIAAAAAAAAAAAAAAFQAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAKQAAAAAAAAAAAAuwLgAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-01-16T12:06:00.689Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "CDlgimage.h",
-              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\CDlgimage.h",
+              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\CDlgimage.h",
               "RelativeDocumentMoniker": "gLim_Task\\CDlgimage.h",
-              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\CDlgimage.h",
+              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\CDlgimage.h",
               "RelativeToolTip": "gLim_Task\\CDlgimage.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAACEAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-01-16T07:12:30.841Z",
               "EditorCaption": ""
@@ -78,35 +78,35 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "gLim_TaskDlg.h",
-              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLim_TaskDlg.h",
+              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_TaskDlg.h",
               "RelativeDocumentMoniker": "gLim_Task\\gLim_TaskDlg.h",
-              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLim_TaskDlg.h",
+              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_TaskDlg.h",
               "RelativeToolTip": "gLim_Task\\gLim_TaskDlg.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABIAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-01-16T11:51:27.089Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
               "Title": "gLim_TaskDlg.cpp",
-              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLim_TaskDlg.cpp",
+              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_TaskDlg.cpp",
               "RelativeDocumentMoniker": "gLim_Task\\gLim_TaskDlg.cpp",
-              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLim_TaskDlg.cpp",
+              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_TaskDlg.cpp",
               "RelativeToolTip": "gLim_Task\\gLim_TaskDlg.cpp",
-              "ViewState": "AgIAAHUAAAAAAAAAAAAewMEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHIAAAAAAAAAAAAAAAcBAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-01-16T01:49:00.925Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "gLimTask.rc - IDD_CDlgimage - Dialog",
-              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLimTask.rc",
+              "DocumentMoniker": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLimTask.rc",
               "RelativeDocumentMoniker": "gLim_Task\\gLimTask.rc",
-              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLim_Task\\gLimTask.rc - IDD_CDlgimage - Dialog",
+              "ToolTip": "C:\\Users\\Pyeon\\Desktop\\gLim_Task\\gLim_Task\\gLimTask.rc - IDD_CDlgimage - Dialog",
               "RelativeToolTip": "gLim_Task\\gLimTask.rc - IDD_CDlgimage - Dialog",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
               "WhenOpened": "2025-01-16T11:35:19.552Z",

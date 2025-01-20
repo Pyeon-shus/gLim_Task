@@ -4,6 +4,9 @@
 
 #pragma once
 #include "afxdialogex.h"
+#include <vector>
+
+using namespace std;
 
 
 // CDlgimage 대화 상자
@@ -16,8 +19,12 @@ public:
 	CDlgimage(CWnd* pParent = nullptr);   // 표준 생성자입니다.
 	virtual ~CDlgimage();
 
+	void DrawCircle(unsigned char* fm, int x, int y, int radius, int color = 0);
+	bool isinCircle(int i, int j, int nCenterX, int nCenterY, int radius);
+
 	CImage m_image;
 	CWnd* m_pParent;
+
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -25,7 +32,6 @@ public:
 #endif
 
 protected:
-	CPoint m_clickPoint;      // 마우스 클릭 좌표
 	CPoint m_currentPoint;    // 실시간 마우스 이동 좌표
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 	

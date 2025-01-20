@@ -56,6 +56,10 @@ END_MESSAGE_MAP()
 
 CgLimTaskDlg::CgLimTaskDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_GLIM_TASK_DIALOG, pParent)
+	, m_pDlgImage(nullptr)         // 멤버 변수 초기화
+	, m_pDlgImage_Result(nullptr)  // 멤버 변수 초기화
+	, m_nRadius(0)
+	, m_CirWidth(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -63,6 +67,8 @@ CgLimTaskDlg::CgLimTaskDlg(CWnd* pParent /*=nullptr*/)
 void CgLimTaskDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_RAD, m_nRadius);
+	DDX_Text(pDX, IDC_CIRCLE_WID, m_CirWidth);
 }
 
 BEGIN_MESSAGE_MAP(CgLimTaskDlg, CDialogEx)
@@ -74,6 +80,7 @@ BEGIN_MESSAGE_MAP(CgLimTaskDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_CIRCLE_WID, &CgLimTaskDlg::OnEnChangeCircleWid)
 	ON_BN_CLICKED(IDC_BTN_RAND_MOV, &CgLimTaskDlg::OnBnClickedBtnRandMov)
 	ON_BN_CLICKED(IDC_BTN_RESET, &CgLimTaskDlg::OnBnClickedBtnReset)
+	ON_BN_CLICKED(IDC_BTN_SET, &CgLimTaskDlg::OnBnClickedBtnSet)
 END_MESSAGE_MAP()
 
 
@@ -108,14 +115,16 @@ BOOL CgLimTaskDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 큰 아이콘을 설정합니다.
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
+	SetDlgItemText(IDC_RAD, _T("10")); // 기본 반지름 값을 10으로 설정
+
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 	MoveWindow(0, 0, 640*2, 800);
-	m_pDlgImage = new CDlgimage;
+	m_pDlgImage = new CDlgimage(this);
 	m_pDlgImage->Create(IDD_CDlgimage, this);
 	m_pDlgImage->ShowWindow(SW_SHOW);
 	m_pDlgImage->MoveWindow(0, 0, 640, 480);
 
-	m_pDlgImage_Result = new CDlgimage;
+	m_pDlgImage_Result = new CDlgimage(this);
 	m_pDlgImage_Result->Create(IDD_CDlgimage, this);
 	m_pDlgImage_Result->ShowWindow(SW_SHOW);
 	m_pDlgImage_Result->MoveWindow(640, 0, 640, 480);
@@ -177,8 +186,20 @@ HCURSOR CgLimTaskDlg::OnQueryDragIcon()
 void CgLimTaskDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
-	delete m_pDlgImage;
+
+	if (m_pDlgImage != nullptr)
+	{
+		delete m_pDlgImage;
+		m_pDlgImage = nullptr; // 포인터 초기화
+	}
+
+	if (m_pDlgImage_Result != nullptr)
+	{
+		delete m_pDlgImage_Result;
+		m_pDlgImage_Result = nullptr; // 포인터 초기화
+	}
 }
+
 
 void CgLimTaskDlg::callFunc(int n) {
 	cout << n << endl;
@@ -217,3 +238,41 @@ void CgLimTaskDlg::OnBnClickedBtnReset()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
+
+
+
+
+void CgLimTaskDlg::OnBnClickedBtnSet()
+{
+	UpdateData(TRUE);
+	// 컨트롤 ID 유효성 확인
+	if (GetDlgItem(IDC_RAD) == nullptr) {
+		AfxMessageBox(_T("IDC_RAD 컨트롤이 존재하지 않습니다."));
+		return;
+	}
+	if (GetDlgItem(IDC_CIRCLE_WID) == nullptr) {
+		AfxMessageBox(_T("IDC_CIRCLE_WID 컨트롤이 존재하지 않습니다."));
+		return;
+	}
+
+	// 이후 기존 코드 실행
+	CString strRadius, strCirWid;
+	GetDlgItemText(IDC_RAD, strRadius);
+	GetDlgItemText(IDC_CIRCLE_WID, strCirWid);
+
+	int nRadius = _ttoi(strRadius);
+	int nCirWidth = _ttoi(strCirWid);
+
+	if (nRadius > 0 && nCirWidth > 0) {
+		AfxMessageBox(_T("반지름 및 정원 폭 값이 설정되었습니다."));
+		nRadius = _ttoi(strRadius);
+		cout << m_nRadius << endl;
+		nCirWidth = _ttoi(strCirWid);
+		cout << m_CirWidth << endl;
+	}
+	else {
+		AfxMessageBox(_T("유효한 값들을 입력하세요.\nex) value > 0"));
+	}
+}
+
+
