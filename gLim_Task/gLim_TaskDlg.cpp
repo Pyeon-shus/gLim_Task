@@ -494,6 +494,7 @@ void CgLimTaskDlg::SaveImage()
 		CreateDirectory(PATH_1, NULL); // 디렉토리 생성
 	}
 	m_pDlgImage_Result->m_image.Save(PATH_2);
+	AfxMessageBox(_T("이미지가 저장이되었습니다. \n경로: C:\\Process"));
 }
 
 void CgLimTaskDlg::Repeat_SaveImage(int i)
