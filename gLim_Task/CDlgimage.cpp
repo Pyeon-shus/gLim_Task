@@ -45,8 +45,6 @@ END_MESSAGE_MAP()
 
 
 // CDlgimage 메시지 처리기
-
-#include "gLim_TaskDlg.h"
 void CDlgimage::OnBnClickedBtnUpParent()
 {
 	static int n = 100;
@@ -75,6 +73,7 @@ void CDlgimage::OnPaint()
 	if (m_image) {
 		m_image.Draw(dc, 0, 0);
 	}
+	DrawOverlays();
 }
 
 
@@ -212,7 +211,6 @@ void CDlgimage::DrawCircle(unsigned char*, int x, int y, int radius, int color)
 		AfxMessageBox(_T("이미지가 초기화되지 않았습니다."));
 		return;
 	}
-	//CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent); // 부모 다이얼로그 캐스팅
 	int nWidth = m_image.GetWidth();
 	int nHeight = m_image.GetHeight();
 	int nPitch = m_image.GetPitch();
@@ -234,7 +232,7 @@ void CDlgimage::DrawCircle(unsigned char*, int x, int y, int radius, int color)
 			}
 		}
 	}
-	//pParent->m_pDlgImage->Invalidate(); // 화면 갱신
+	CopyImage();
 }
 
 
@@ -281,3 +279,111 @@ void CDlgimage::ClearImage()
 	Invalidate(); // 화면 갱신
 }
 
+void CDlgimage::CopyImage()
+{
+	CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent);
+	if (!pParent || !pParent->m_pDlgImage_Result) {
+		AfxMessageBox(_T("부모 다이얼로그 또는 결과 다이얼로그가 유효하지 않습니다."));
+		return;
+	}
+
+	// m_image를 m_pDlgImage_Result로 메모리 복사
+	HDC srcDC = m_image.GetDC();
+	HDC destDC = pParent->m_pDlgImage_Result->m_image.GetDC();
+
+	int width = m_image.GetWidth();
+	int height = m_image.GetHeight();
+
+	BitBlt(destDC, 0, 0, width, height, srcDC, 0, 0, SRCCOPY);
+
+	m_image.ReleaseDC();
+	pParent->m_pDlgImage_Result->m_image.ReleaseDC();
+
+	// 데이터 기반 추가 그리기
+	DrawOverlays();
+
+	// 결과 창 갱신
+	pParent->m_pDlgImage_Result->Invalidate();
+}
+
+void CDlgimage::DrawOverlays()
+{
+	CgLimTaskDlg* pParent = static_cast<CgLimTaskDlg*>(m_pParent);
+	if (!pParent) return;
+
+	CClientDC dc(pParent->m_pDlgImage_Result);
+
+	// 점선 스타일 설정
+	CPen dottedPen(PS_DOT, 1, RGB(0x00, 0x80, 0x80)); // 파란색 점선
+	CPen* pOldPen = dc.SelectObject(&dottedPen);
+
+	// 텍스트 배경을 투명하게 설정
+	dc.SetBkMode(TRANSPARENT);
+
+	// 텍스트 색상 설정
+	dc.SetTextColor(RGB(0x80, 0xA0, 0xff));
+
+
+	CRect clientRect;
+	pParent->m_pDlgImage_Result->GetClientRect(&clientRect);
+
+	int textOffsetY = 0; // 화면 밖에 표시될 텍스트의 Y 위치
+	const int textPadding = 20; // 텍스트 간 간격
+
+	// 1. 클릭된 점(PointData)들 간에 점선 및 텍스트 표시
+	for (size_t i = 0; i < pParent->m_clickPoints.size(); ++i) {
+		const auto& pointData = pParent->m_clickPoints[i];
+		CString text;
+
+		// 원 좌표와 반지름 텍스트 생성
+		text.Format(_T("%d_(%d, %d)\nR=%d"), static_cast<int>(i + 1), pointData.point.x, pointData.point.y, pointData.radius);
+
+		// 점선으로 다른 클릭된 점과 연결
+		if (i > 0) {
+			dc.MoveTo(pParent->m_clickPoints[i - 1].point);
+			dc.LineTo(pointData.point);
+		}
+
+		// 원 중심 좌표가 화면 안에 있는지 확인
+		if (clientRect.PtInRect(pointData.point)) {
+			// 중앙 정렬하여 텍스트 출력
+			CRect textRect(pointData.point.x - 50, pointData.point.y + 5, pointData.point.x + 50, pointData.point.y + 50);
+			dc.DrawText(text, textRect, DT_CENTER | DT_WORDBREAK);
+		}
+		else {
+			// 화면 밖으로 나가면 왼쪽 위에 차례대로 표시
+			CRect textRect(5, textOffsetY, clientRect.Width() - 5, textOffsetY + textPadding * 2);
+			dc.DrawText(text, textRect, DT_LEFT | DT_WORDBREAK);
+			textOffsetY += textPadding * 2;
+		}
+	}
+
+	// 마지막 점과 첫 번째 점을 연결 (삼각형 닫기)
+	if (pParent->m_clickPoints.size() == 3) {
+		dc.MoveTo(pParent->m_clickPoints[2].point);
+		dc.LineTo(pParent->m_clickPoints[0].point);
+	}
+
+	// 2. 정원의 중심(m_circleCenters) 표시
+	if (pParent->m_clickPoints.size() == 3) {
+		const CPoint& center = pParent->m_circleCenters;
+		CString centerText;
+		centerText.Format(_T("Center\n(%d, %d)"), center.x, center.y);
+
+		// 정원의 중심 좌표가 화면 안에 있는지 확인
+		if (clientRect.PtInRect(center)) {
+			// 중앙 정렬하여 텍스트 출력
+			CRect textRect(center.x - 50, center.y + 10, center.x + 50, center.y + 50);
+			dc.DrawText(centerText, textRect, DT_CENTER | DT_WORDBREAK);
+		}
+		else {
+			// 화면 밖으로 나가면 왼쪽 위에 차례대로 표시
+			CRect textRect(5, textOffsetY, clientRect.Width() - 5, textOffsetY + textPadding * 2);
+			dc.DrawText(centerText, textRect, DT_LEFT | DT_WORDBREAK);
+			textOffsetY += textPadding * 2;
+		}
+	}
+
+	// 원래 펜 복원
+	dc.SelectObject(pOldPen);
+}

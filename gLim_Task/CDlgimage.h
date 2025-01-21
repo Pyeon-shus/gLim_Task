@@ -5,6 +5,7 @@
 #pragma once
 #include "afxdialogex.h"
 #include <vector>
+#include <direct.h>
 
 using namespace std;
 
@@ -23,6 +24,8 @@ public:
 	bool isinCircle(int i, int j, int nCenterX, int nCenterY, int radius);
 	bool validimgPos(int x, int y);
 	void ClearImage();
+	void CopyImage();
+	void DrawOverlays();
 
 	CImage m_image;
 	CWnd* m_pParent;

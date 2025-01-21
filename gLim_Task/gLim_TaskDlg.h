@@ -6,7 +6,16 @@
 
 #include "CDlgimage.h"
 #include <vector>
-#define PADDING 10
+
+#define PADDING		10
+#define C_GRAY		0x80
+#define C_WITHE		0xFF
+#define REPEAT		10
+#define DELAY		500
+
+#define PATH_1 _T("C:\\Process")
+#define PATH_2 _T("C:\\Process\\ResultImage.bmp")
+
 
 using namespace std;
 
@@ -26,6 +35,8 @@ public:
 	CDlgimage* m_pDlgImage_Result;
 	vector<PointData> m_clickPoints;
 	CPoint m_circleCenters;
+	int m_nRadius;
+	int m_CirWidth;
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -56,17 +67,18 @@ public:
 	void DrawEnclosingCircle();
 	void RedrawAll();
 	void MoveClickPointsRandomly();
-	void PerformRandomMovement(int ett=10);
+	void PerformRandomMovement();
+	void SaveImage();
+	void Repeat_SaveImage(int i);
+
 
 	afx_msg void OnEnChangeRad();
 	afx_msg void OnEnChangeCircleWid();
 	afx_msg void OnBnClickedBtnRandMov();
 	afx_msg void OnBnClickedBtnReset();
 	afx_msg void OnBnClickedBtnSet();
-	int m_nRadius;
-	int m_CirWidth;
-	afx_msg void OnBnClickedBtnProcess();
 	afx_msg void OnBnClickedBtnRandMov2();
+	afx_msg void OnBnClickedBtnImgSave();
 };
 
 

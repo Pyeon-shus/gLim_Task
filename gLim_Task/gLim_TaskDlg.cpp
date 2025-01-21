@@ -9,8 +9,6 @@
 #include "afxdialogex.h"
 #include <iostream>
 #include <thread>
-#include <chrono>
-#include <ctime>
 
 using namespace std;
 
@@ -85,8 +83,8 @@ BEGIN_MESSAGE_MAP(CgLimTaskDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_RAND_MOV, &CgLimTaskDlg::OnBnClickedBtnRandMov)
 	ON_BN_CLICKED(IDC_BTN_RESET, &CgLimTaskDlg::OnBnClickedBtnReset)
 	ON_BN_CLICKED(IDC_BTN_SET, &CgLimTaskDlg::OnBnClickedBtnSet)
-	ON_BN_CLICKED(IDC_BTN_PROCESS, &CgLimTaskDlg::OnBnClickedBtnProcess)
 	ON_BN_CLICKED(IDC_BTN_RAND_MOV2, &CgLimTaskDlg::OnBnClickedBtnRandMov2)
+	ON_BN_CLICKED(IDC_BTN_IMG_SAVE, &CgLimTaskDlg::OnBnClickedBtnImgSave)
 END_MESSAGE_MAP()
 
 
@@ -236,14 +234,12 @@ void CgLimTaskDlg::OnEnChangeCircleWid()
 
 void CgLimTaskDlg::OnBnClickedBtnRandMov()
 {
-	// 클릭 지점이 3개인지 확인
 	if (m_clickPoints.size() != 3) {
-		AfxMessageBox(_T("좌표가 3개가 아닙니다. 클릭 좌표를 추가해 주세요."));
+		AfxMessageBox(_T("좌표가 3개가 아닙니다.\n좌표를 더 추가해주십시오."));
 		return;
 	}
 
-	// 랜덤 이동 작업을 비동기로 실행
-	thread(&CgLimTaskDlg::PerformRandomMovement, this, 1).detach();
+	MoveClickPointsRandomly(); // 랜덤 이동 수행
 }
 
 
@@ -255,6 +251,7 @@ void CgLimTaskDlg::OnBnClickedBtnReset()
 	// m_pDlgImage 초기화
 	if (m_pDlgImage != nullptr) {
 		m_pDlgImage->ClearImage(); // m_pDlgImage 초기화
+		m_pDlgImage_Result->ClearImage(); // m_pDlgImage_Result 초기화
 	}
 
 	// 좌표값 초기화
@@ -295,9 +292,9 @@ void CgLimTaskDlg::OnBnClickedBtnSet()
 	if (nRadius > 0 && nCirWidth > 0) {
 		AfxMessageBox(_T("반지름 및 정원 폭 값이 설정되었습니다."));
 		nRadius = _ttoi(strRadius);
-		cout << m_nRadius << endl;
 		nCirWidth = _ttoi(strCirWid);
-		cout << m_CirWidth << endl;
+		cout << "반지름 값: " << m_nRadius << endl;
+		cout << "정원 두께: " << m_CirWidth << endl;
 	}
 	else {
 		AfxMessageBox(_T("유효한 값들을 입력하세요.\nex) value > 0"));
@@ -375,12 +372,12 @@ void CgLimTaskDlg::DrawEnclosingCircle()
 
 	// 큰 원 (회색)
 	if (m_pDlgImage) {
-		m_pDlgImage->DrawCircle(nullptr, center.x, center.y, outerRadius, 128); // 128 = 회색
+		m_pDlgImage->DrawCircle(nullptr, center.x, center.y, outerRadius, C_GRAY);
 	}
 
 	// 작은 원 (하얀색)
 	if (innerRadius > 0 && m_pDlgImage) {
-		m_pDlgImage->DrawCircle(nullptr, center.x, center.y, innerRadius, 255); // 255 = 하얀색
+		m_pDlgImage->DrawCircle(nullptr, center.x, center.y, innerRadius, C_WITHE);
 	}
 }
 
@@ -411,18 +408,14 @@ void CgLimTaskDlg::RedrawAll()
 
 
 
-
-void CgLimTaskDlg::OnBnClickedBtnProcess()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-}
-
-
 void CgLimTaskDlg::MoveClickPointsRandomly()
 {
 	if (m_clickPoints.empty()) {
 		return;
 	}
+
+	srand(static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count()));
+	//실행 속도및 매번 다른 난수 생성을 위해 사용
 
 	int nWidth = m_pDlgImage->m_image.GetWidth();
 	int nHeight = m_pDlgImage->m_image.GetHeight();
@@ -436,12 +429,13 @@ void CgLimTaskDlg::MoveClickPointsRandomly()
 	// 화면 갱신
 	RedrawAll();
 	m_pDlgImage->Invalidate();
+	m_pDlgImage_Result->Invalidate();
 }
 
-void CgLimTaskDlg::PerformRandomMovement(int ett)
+void CgLimTaskDlg::PerformRandomMovement()
 {
-	int iterations = ett; // 총 10번 반복
-	int delayMs = 500;   // 초당 2회 (500ms 간격)
+	int iterations = REPEAT; // 총 10번 반복
+	int delayMs = DELAY;   // 초당 2회 (500ms 간격)
 
 	for (int i = 0; i < iterations; ++i) {
 		MoveClickPointsRandomly(); // 클릭 지점 랜덤 이동 수행
@@ -462,9 +456,11 @@ void CgLimTaskDlg::PerformRandomMovement(int ett)
 
 		// 화면 갱신
 		RedrawAll();
+		thread thread_2(&CgLimTaskDlg::Repeat_SaveImage, this, i);
+		thread_2.detach();
 
 		// 500ms 대기 (UI 멈춤 방지)
-		std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
+		Sleep(delayMs);
 	}
 
 	// 작업 완료 메시지 출력
@@ -482,6 +478,32 @@ void CgLimTaskDlg::OnBnClickedBtnRandMov2()
 	}
 
 	// 랜덤 이동 작업을 비동기로 실행
-	thread(&CgLimTaskDlg::PerformRandomMovement, this, 10).detach();
+	thread thread_1(&CgLimTaskDlg::PerformRandomMovement, this);
+	thread_1.detach();
+}
 
+void CgLimTaskDlg::OnBnClickedBtnImgSave()
+{
+	SaveImage();
+}
+
+
+void CgLimTaskDlg::SaveImage()
+{
+	if (_taccess(PATH_1, 0) != 0) {
+		CreateDirectory(PATH_1, NULL); // 디렉토리 생성
+	}
+	m_pDlgImage_Result->m_image.Save(PATH_2);
+}
+
+void CgLimTaskDlg::Repeat_SaveImage(int i)
+{
+	if (_taccess(PATH_1, 0) != 0) {
+		CreateDirectory(PATH_1, NULL); // 디렉토리 생성
+
+	}
+	CString filePath;
+	filePath.Format(_T("C:\\Process\\ResultImage - %d.bmp"), i + 1);
+
+	m_pDlgImage_Result->m_image.Save(filePath);
 }
